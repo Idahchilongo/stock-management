@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Katundu System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Katundu Stock Management System</h1>
+    <h2 id="welcome-message"></h2>
+
+    <div class="summary">
+      <p>Total Different Items: <span id="total-items">0</span></p>
+      <p>Total Quantity: <span id="total-quantity">0</span></p>
+      <p>Total Stock Value (MK): <span id="total-value">0</span></p>
+    </div>
+
+    <div class="buttons">
+      <button onclick="location.href='add-stock.html'">➕ Add Stock</button>
+      <button onclick="location.href='view-stock.html'">📋 View Stock</button>
+      <button onclick="location.href='edit-stock.html'">🖊️ Edit Stock</button>
+      <button onclick="location.href='delete-stock.html'">❌ Delete Stock</button>
+      <button onclick="location.href='stock-alert.html'">🚨 Stock Alerts</button>
+      <button onclick="window.print()">📄 Print Report</button>
+      <button onclick="location.href='sell-stock.html'">💰 Sell Stock</button>
+    </div>
+
+    <div class="logout">
+      <button onclick="logout()">🔓 Logout</button>
+    </div>
+  </div>
+
+  <script>
+    const user = sessionStorage.getItem("loggedInUser");
+    if (!user) {
+      alert("Please login first");
+      window.location.href = "login.html";
+    } else {
+      document.getElementById("welcome-message").textContent = "Hello, " + user + "!";
+    }
+
+    window.onload = function() {
+      const stockData = JSON.parse(localStorage.getItem("stockItems")) || [];
+      const totalItems = stockData.length;
+      let totalQuantity = 0;
+      let totalValue = 0;
+      stockData.forEach(item => {
+        totalQuantity += item.quantity;
+        totalValue += item.quantity * item.sellPrice;
+      });
+      document.getElementById("total-items").textContent = totalItems;
+      document.getElementById("total-quantity").textContent = totalQuantity;
+      document.getElementById("total-value").textContent = totalValue;
+    };
+
+    function logout() {
+      sessionStorage.removeItem("loggedInUser");
+      alert("You have been logged out.");
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

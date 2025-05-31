@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Edit Stock</title>
+  <link rel="stylesheet" href="./all.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #f9f9f9;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    select, input, button {
+      display: block;
+      width: 300px;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+
+    .back button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h2>Edit Stock Item</h2>
+
+  <select id="itemSelect">
+    <option value="">Select an item</option>
+  </select>
+
+  <input type="number" id="newQuantity" placeholder="New Quantity" />
+  <input type="number" id="newSellPrice" placeholder="New Selling Price (MK)" />
+
+  <button onclick="updateStock()">Update Item</button>
+
+  <div class="back">
+    <button onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+  </div>
+
+  <script>
+    let stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+
+    const itemSelect = document.getElementById("itemSelect");
+
+    stockItems.forEach((item, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = `${item.name} (Qty: ${item.quantity}, Price: MK${item.sellPrice})`;
+      itemSelect.appendChild(option);
+    });
+
+    function updateStock() {
+      const index = itemSelect.value;
+      const newQty = parseInt(document.getElementById("newQuantity").value);
+      const newPrice = parseFloat(document.getElementById("newSellPrice").value);
+
+      if (index === "" || isNaN(newQty) || isNaN(newPrice)) {
+        alert("Please fill in all fields correctly.");
+        return;
+      }
+
+      stockItems[index].quantity = newQty;
+      stockItems[index].sellPrice = newPrice;
+
+      localStorage.setItem("stockItems", JSON.stringify(stockItems));
+      alert("Stock item updated successfully!");
+
+      location.reload(); // refresh the page to update dropdown
+    }
+  </script>
+</body>
+</html>

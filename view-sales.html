@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sales Report - Katundu System</title>
+</head>
+<body>
+  <h1>Sales Records</h1>
+
+  <label for="filterDate">📅 Filter by Date:</label>
+  <input type="date" id="filterDate">
+  <button onclick="filterSales()">Apply Filter</button>
+  <button onclick="resetFilter()">Show All</button>
+
+  <br><br>
+
+  <table border="1" cellpadding="10">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Item</th>
+        <th>Quantity Sold</th>
+        <th>Selling Price (MK)</th>
+        <th>Total Sale (MK)</th>
+      </tr>
+    </thead>
+    <tbody id="salesTableBody"></tbody>
+  </table>
+
+  <h3>Total Revenue: MK <span id="totalRevenue">0</span></h3>
+  <br>
+<button onclick="window.print()">🖨️ Print Report</button>
+<br><br>
+
+  <br>
+  <a href="dashboard.html">← Back to Dashboard</a>
+
+  <script>
+    let allSales = [];
+
+    function loadSalesRecords() {
+      allSales = JSON.parse(localStorage.getItem("salesRecords")) || [];
+      displaySales(allSales);
+    }
+
+    function displaySales(sales) {
+      const tableBody = document.getElementById("salesTableBody");
+      const totalRevenueEl = document.getElementById("totalRevenue");
+
+      tableBody.innerHTML = "";
+      let totalRevenue = 0;
+
+      sales.forEach(sale => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${sale.date}</td>
+          <td>${sale.name}</td>
+          <td>${sale.quantity}</td>
+          <td>${sale.sellPrice}</td>
+          <td>${sale.total}</td>
+        `;
+
+        tableBody.appendChild(row);
+        totalRevenue += sale.total;
+      });
+
+      totalRevenueEl.textContent = totalRevenue.toFixed(2);
+    }
+
+    function filterSales() {
+      const selectedDate = document.getElementById("filterDate").value;
+      if (!selectedDate) return;
+
+      const formattedDate = new Date(selectedDate).toLocaleDateString();
+      const filtered = allSales.filter(sale => sale.date === formattedDate);
+      displaySales(filtered);
+    }
+
+    function resetFilter() {
+      document.getElementById("filterDate").value = "";
+      displaySales(allSales);
+    }
+
+    window.onload = loadSalesRecords;
+  </script>
+</body>
+</html>

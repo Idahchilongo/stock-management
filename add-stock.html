@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Stock - Katundu System</title>
+  
+</head>
+<body>
+  <h1>Add Stock Item</h1>
+  
+  <form id="stockForm">
+    <label>Item Name: <input type="text" id="itemName" required></label><br><br>
+    <label>Quantity: <input type="number" id="quantity" required></label><br><br>
+    <label>Buying Price (MK): <input type="number" id="buyPrice" required></label><br><br>
+    <label>Selling Price (MK): <input type="number" id="sellPrice" required></label><br><br>
+    <button type="submit">Add Item</button>
+  </form>
+
+  <p id="message"></p>
+
+  <br><br>
+  <a href="dashboard.html">← Back to Dashboard</a>
+
+  <script>
+    document.getElementById("stockForm").onsubmit = function (e) {
+      e.preventDefault();
+
+      // Get form values
+      const name = document.getElementById("itemName").value.trim();
+      const quantity = parseInt(document.getElementById("quantity").value);
+      const buyPrice = parseFloat(document.getElementById("buyPrice").value);
+      const sellPrice = parseFloat(document.getElementById("sellPrice").value);
+
+      // Create new item object
+      const newItem = {
+        name: name,
+        quantity: quantity,
+        buyPrice: buyPrice,
+        sellPrice: sellPrice
+      };
+
+      // Get existing stock from localStorage
+      const stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+
+      // Add new item
+      stockItems.push(newItem);
+
+      // Save updated stock
+      localStorage.setItem("stockItems", JSON.stringify(stockItems));
+
+      // Show confirmation
+      document.getElementById("message").textContent = "✅ Item added successfully!";
+
+      // Optional: Clear form
+      document.getElementById("stockForm").reset();
+    };
+  </script>
+</body>
+</html>

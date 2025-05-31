@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Record Sale - Katundu System</title>
+  
+</head>
+<body>
+  <h1>Record a Sale</h1>
+
+  <form id="saleForm">
+    <label>Select Item:
+      <select id="itemSelect" required></select>
+    </label><br><br>
+
+    <label>Quantity Sold:
+      <input type="number" id="quantitySold" min="1" required>
+    </label><br><br>
+
+    <button type="submit">Record Sale</button>
+  </form>
+
+  <p id="message"></p>
+  <br>
+  <a href="dashboard.html">← Back to Dashboard</a>
+
+  <script>
+    function populateItems() {
+      const stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+      const select = document.getElementById("itemSelect");
+
+      stockItems.forEach((item, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = `${item.name} (Qty: ${item.quantity})`;
+        select.appendChild(option);
+      });
+    }
+
+    document.getElementById("saleForm").onsubmit = function(e) {
+      e.preventDefault();
+      const index = parseInt(document.getElementById("itemSelect").value);
+      const qtySold = parseInt(document.getElementById("quantitySold").value);
+
+      let stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+      let item = stockItems[index];
+
+      if (qtySold > item.quantity) {
+        alert("❌ Not enough stock available!");
+        return;
+      }
+
+      // Subtract from stock
+      item.quantity -= qtySold;
+      stockItems[index] = item;
+      localStorage.setItem("stockItems", JSON.stringify(stockItems));
+
+      // Record sale
+      const sales = JSON.parse(localStorage.getItem("salesRecords")) || [];
+      const saleRecord = {
+        name: item.name,
+        quantity: qtySold,
+        sellPrice: item.sellPrice,
+        total: qtySold * item.sellPrice,
+        date: new Date().toLocaleDateString()
+      };
+      sales.push(saleRecord);
+      localStorage.setItem("salesRecords", JSON.stringify(sales));
+
+      // Show message
+      document.getElementById("message").textContent = `✅ Sold ${qtySold} ${item.name}(s) successfully.`;
+
+      document.getElementById("saleForm").reset();
+    };
+
+    window.onload = populateItems;
+  </script>
+</body>
+</html>

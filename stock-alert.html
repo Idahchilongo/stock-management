@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Low Stock Alert</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background-color: #fffbe6;
+    }
+
+    h2 {
+      text-align: center;
+      color: #c0392b;
+    }
+
+    ul {
+      list-style-type: none;
+      padding: 0;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    li {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+    }
+
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .back button {
+      background-color: #3498db;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .back button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <h2>⚠️ Low Stock Alert</h2>
+
+  <ul id="lowStockList"></ul>
+
+  <div class="back">
+    <button onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+  </div>
+
+  <script>
+    const stockItems = JSON.parse(localStorage.getItem("stockItems")) || [];
+    const lowStockList = document.getElementById("lowStockList");
+
+    const lowStockThreshold = 5;
+
+    const lowItems = stockItems.filter(item => item.quantity < lowStockThreshold);
+
+    if (lowItems.length === 0) {
+      lowStockList.innerHTML = "<li>All stock levels are sufficient ✅</li>";
+    } else {
+      lowItems.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = `Item: ${item.name} | Quantity: ${item.quantity} | Selling Price: MK${item.sellPrice}`;
+        lowStockList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
